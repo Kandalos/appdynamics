@@ -23,7 +23,7 @@ Each Component has to be installed seperatly.
    sudo timedatectl set-timezone America/New_York
    ```
 5. install/update software requirements:
-   1.Libaio:
+   1. Libaio:
    
       Check if it exist: 
       ```
@@ -44,20 +44,39 @@ Each Component has to be installed seperatly.
       sudo ln -s /lib/x86_64-linux-gnu/libncurses.so.6.4 /lib/x86_64-linux-gnu/libncurses.so.5
       sudo ln -s /lib/x86_64-linux-gnu/libtinfo.so.6.4  /lib/x86_64-linux-gnu/libtinfo.so.5
       ```
-   3.netstat: ``` sudo apt-get install net-tools```
+   3. netstat: ``` sudo apt-get install net-tools```
 
       
-9. Copy controller installer into ```/opt/appdynamics``` and execute the installer:
+6. Copy controller installer into ```/opt/appdynamics``` and execute the installer:
    
    Create the directory /opt/appdynamics
    ```
-   sudo mkdir /opt/appdynamics
+   sudo mkdir /opt/appdynamics/platform
    ```
    Give it permissions:
    ```
-   sudo chown user:user /opt/appdynamics
+   sudo chown user:user /opt/appdynamics/platform
    ```
-   Finally Copy files using scp and run platform-setup-xxx.sh
+   Finally Copy files using scp and run platform-setup-xxx.sh using silent installation method
+   Create response.varfile:
+   ```
+   serverHostName=HOST_NAME
+   sys.languageId=en
+   disableEULA=true
+   
+   platformAdmin.port=9191
+   platformAdmin.databasePort=3377
+   platformAdmin.dataDir=/opt/appdynamics/platform/mysql/data
+   platformAdmin.databasePassword=ENTER_PASSWORD
+   platformAdmin.databaseRootPassword=ENTER_PASSWORD
+   platformAdmin.adminPassword=ENTER_PASSWORD
+   platformAdmin.useHttps$Boolean=false
+   sys.installationDir=/opt/appdynamics/platform
+   ```
+   use silent installer method:
+   ```
+   platform-setup-64bit-windows.exe -q -varfile c:/response.varfile
+   ```
 
 6.
 
