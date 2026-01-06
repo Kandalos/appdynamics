@@ -1,7 +1,7 @@
 # EUM Server ( End User Monitoring )
 
 -
-1. Create Linux ( 8-32GB RAM, 1TB, 4 Cores)
+1. Create Linux ( 8-32GB RAM, 50Gb, 4 Cores)
 2. Install Ubuntu
 3. open ports for :
    ```
