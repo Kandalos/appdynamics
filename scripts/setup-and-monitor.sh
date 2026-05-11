@@ -1,26 +1,20 @@
-#!/bin/bash
-
-# =================================================================
-# AppDynamics Script
-# Purpose: Prepares Ubuntu for AppD 
-# Components: OS Prep, Networking, and Process Watchdog
-# =================================================================
-
-# 1. OS PREPARATION
-echo "Checking OS Dependencies..."
-sudo apt update && sudo apt install -y libaio1 libncurses5 tar unzip curl
-
-# Missing packages
-if [ ! -f /usr/lib/x86_64-linux-gnu/libaio.so.1 ]; then
-    echo "Fixing libaio symlink..."
-    sudo ln -s /lib/x86_64-linux-gnu/libaio.so.1 /usr/lib/x86_64-linux-gnu/libaio.so.1
-fi
-
-# 2. FIREWALL 
-echo "Configuring Firewall..."
-sudo ufw allow 7001/tcp # EUM HTTP
-sudo ufw allow 8090/tcp # Controller Comm
-sudo ufw allow 9080/tcp # Events Service
-sudo ufw reload
-
-echo "Setup Prepreation Complete."
+set -e  # Stop immediately if any command fails
+# 1. Make absolutely sure we're in an 'appdynamics' directory
+[[ "$PWD" == appdynamics ]] || { echo "ERROR: Not in appdynamics dir. Exiting."; exit 1; }
+# 2. Remove old -disabled dirs (ignore errors if none exist)
+find . -maxdepth 1 -type d -name '-disabled' -exec rm -rf {} + 2>/dev/null; true
+# 3. Rename current Tomcat dirs to <name>-disabled
+find . -maxdepth 1 -type d ! -name "." ! -name "*-disabled" -exec mv {} {}-disabled \;
+# 4. Extract new agent
+unzip -o Appdynamics-App-Agent.zip -d temp_extract
+# 5. Create fresh Tomcat dirs and copy new agent into them
+find . -maxdepth 1 -type d -name "Tomcat[0-9][0-9][0-9][0-9]*-disabled" | \
+  sed 's/-disabled$//' | \
+  xargs -I {} sh -c 'mkdir -p "{}" && cp -r temp_extract/* "{}"/'
+# 6. Restore controller-info.xml from the old (disabled) configs
+find . -maxdepth 1 -type d -name "Tomcat[0-9][0-9][0-9][0-9]*-disabled" | \
+  sed 's/-disabled$//' | \
+  xargs -I {} sh -c '[ -f "{}-disabled/conf/controller-info.xml" ] && cp "{}-disabled/conf/controller-info.xml" "{}/conf/"'
+# 7. Clean up
+rm -rf temp_extract
+echo "All done. New agents are in place."
