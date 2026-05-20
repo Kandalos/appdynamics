@@ -1,6 +1,6 @@
 
 ## **AppDynamics Events Service Installation Guide**
-#### PREQUISITES
+#### PRE CONFIGURATION
 ````md
 ## Event Services Prerequisites
 
