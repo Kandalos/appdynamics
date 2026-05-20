@@ -1,5 +1,54 @@
 
 ## **AppDynamics Events Service Installation Guide**
+#### PREQUISITES
+````md
+## Event Services Prerequisites
+
+On each node in the cluster, apply the following changes.
+
+### 1. Update `sysctl.conf`
+
+Edit `/etc/sysctl.conf` and add:
+
+```bash
+vm.max_map_count=262144
+````
+
+Reload the configuration without rebooting:
+
+```bash
+sudo sysctl --system
+```
+
+---
+
+### 2. Increase File Descriptor Limits
+
+Edit `/etc/security/limits.conf` and add:
+
+```bash
+<username_running_eventsservice> soft nofile 96000
+<username_running_eventsservice> hard nofile 96000
+<username_running_eventsservice> soft memlock unlimited
+<username_running_eventsservice> hard memlock unlimited
+```
+
+> Note: Changes take effect after logout/login.
+
+---
+
+### 3. Disable Swap Memory
+
+Disable swap immediately:
+
+```bash
+swapoff -a
+```
+
+Remove or comment out swap entries in `/etc/fstab` to make it permanent.
+
+----
+#### SETUP
 
 ### **1. Virtual Machine Preparation**
 
