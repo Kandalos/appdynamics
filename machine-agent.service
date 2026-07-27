@@ -1,0 +1,25 @@
+[Unit]
+Description=AppDynamics Machine Agent
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+
+User=appdy
+Group=appdy
+
+WorkingDirectory=/opt/appdynamics/agents/machine-agent
+
+ExecStart=/opt/appdynamics/agents/machine-agent/bin/machine-agent
+
+Restart=on-failure
+RestartSec=15
+
+SuccessExitStatus=143
+
+TimeoutStartSec=300
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+[Unit]
+Description=AppDynamics Database Agent
+Wants=appd-ctrl.service
+After=appd-ctrl.service
+
+[Service]
+Type=simple
+
+User=appdy
+Group=appdy
+
+WorkingDirectory=/opt/appdynamics/agents/db-agent
+
+# Uncomment the following line if the DB Agent starts before the Controller
+# HTTP interface is fully ready after a reboot.
+# ExecStartPre=/bin/bash -c "until curl -k -s https://localhost:8181/controller/rest/serverstatus >/dev/null 2>&1; do sleep 5; done"
+
+ExecStart=/opt/appdynamics/agents/db-agent/start-dbagent
+
+Restart=on-failure
+RestartSec=15
+
+SuccessExitStatus=143
+
+TimeoutStartSec=300
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+[Unit]
+Description=AppDynamics Enterprise Console
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=forking
+
+User=appdy
+Group=appdy
+
+ExecStart=/opt/appdynamics/platform/platform-admin/bin/platform-admin.sh start-platform-admin
+ExecStop=/opt/appdynamics/platform/platform-admin/bin/platform-admin.sh stop-platform-admin
+
+KillMode=process
+
+TimeoutStartSec=600
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target

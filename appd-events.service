@@ -1,0 +1,27 @@
+[Unit]
+Description=AppDynamics Events Service
+Wants=appd-platform.service
+After=appd-platform.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+User=appdy
+Group=appdy
+
+ExecStart=/bin/bash -c "until /opt/appdynamics/platform/platform-admin/bin/platform-admin.sh login --user-name admin --password Aa123456 >/dev/null 2>&1; do sleep 5; done"
+
+ExecStart=/opt/appdynamics/platform/platform-admin/bin/platform-admin.sh submit-job --platform-name MP --service events-service --job stop
+
+ExecStart=/opt/appdynamics/platform/platform-admin/bin/platform-admin.sh submit-job --platform-name MP --service events-service --job start
+
+ExecStop=/opt/appdynamics/platform/platform-admin/bin/platform-admin.sh login --user-name admin --password Aa123456
+
+ExecStop=/opt/appdynamics/platform/platform-admin/bin/platform-admin.sh submit-job --platform-name MP --service events-service --job stop
+
+TimeoutStartSec=1800
+TimeoutStopSec=900
+
+[Install]
+WantedBy=multi-user.target
